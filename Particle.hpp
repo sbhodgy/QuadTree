@@ -6,7 +6,7 @@
 class Particle
 {
 public:
-    Particle(sf::Vector2f position);
+    Particle(sf::Vector2f position, float size);
 
     void setVelocity(float vx, float vy);
 
@@ -15,6 +15,7 @@ public:
 public:
     sf::RectangleShape mParticle;
     sf::Vector2f mVelocity;
+    bool isColliding;
 };
 
 #endif // PARTICLE_HPP

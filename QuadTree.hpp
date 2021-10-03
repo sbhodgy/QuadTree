@@ -14,19 +14,19 @@ class QuadTree : public sf::Drawable
 public:
     QuadTree(sf::Vector2f position, sf::Vector2f size, size_t entityLimit);
 
-    void addEntity(Particle entity);
+    void addEntity(std::shared_ptr<Particle> particle);
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
-    void clear();
+    void checkCollisions();
 
 private:
-    void passEntity(Particle particle);
+    void passEntity(std::shared_ptr<Particle> particle);
 
     void divideQuad();
 
 private:
-    std::vector<Particle> mEntities;
+    std::vector<std::shared_ptr<Particle>> mEntities;
     sf::RectangleShape mQuad;
     float mMinQuadSize;
     size_t mEntityLimit;

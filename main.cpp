@@ -13,26 +13,27 @@ int main()
     int height = 700;
     float adjust = 1.f;
     int maxVelocity = 200;
+    int particleSize = 10.f;
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Quad Tree Example");
 
     sf::Vector2f position = sf::Vector2f(width * (1.f - adjust) / 2.f, height * (1.f - adjust) / 2.f);
     sf::Vector2f size = sf::Vector2f(width * adjust, height * adjust);
 
-    QuadTree qTree(position, size, 5);
+    // QuadTree qTree(position, size, 5);
 
-    std::vector<Particle> particleSet;
+    std::vector<std::shared_ptr<Particle>> particleSet;
 
     sf::Clock clock;
 
     std::srand(std::time(nullptr));
 
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 200; ++i)
     {
         // generate random position
 
-        float xPosition = rand() % width;
-        float yPosition = rand() % height;
+        float xPosition = rand() % (width - particleSize);
+        float yPosition = rand() % (height - particleSize);
 
         // generate random velocity
 
@@ -41,9 +42,9 @@ int main()
 
         // create the particle and add to the quad tree
 
-        Particle particle(sf::Vector2f(xPosition, yPosition));
+        std::shared_ptr<Particle> particle(new Particle(sf::Vector2f(xPosition, yPosition), particleSize));
 
-        particle.setVelocity(xVelocity, yVelocity);
+        particle->setVelocity(xVelocity, yVelocity);
 
         particleSet.push_back(particle);
 
@@ -76,17 +77,31 @@ int main()
 
         timeSinceLastUpdate += deltaTime;
 
-        // while (timeSinceLastUpdate > TimePerFrame)
-        // {
-        //     timeSinceLastUpdate -= TimePerFrame;
+        while (timeSinceLastUpdate > TimePerFrame)
+        {
+            timeSinceLastUpdate -= TimePerFrame;
 
-            for (auto itr = particleSet.begin(); itr < particleSet.end(); ++itr)
-            {
-                itr->update(deltaTime);
-                window.draw(itr->mParticle);
-                qTree.addEntity(*itr);
-            }
-        // }
+            for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+                (*itr)->update(TimePerFrame);
+        }
+
+        for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+        {
+            qTree.addEntity(*itr);
+        }
+
+        qTree.checkCollisions();
+
+        for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+        {
+            if ((*itr)->isColliding == true)
+                (*itr)->mParticle.setFillColor(sf::Color::Red);
+            else
+                (*itr)->mParticle.setFillColor(sf::Color::Green);
+
+            window.draw((*itr)->mParticle);
+            (*itr)->isColliding = false;
+        }
 
         window.draw(qTree);
         window.display();
