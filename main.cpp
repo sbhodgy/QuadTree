@@ -1,24 +1,44 @@
 #include "QuadTree.hpp"
+#include "Particle.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
-
-#include "Particle.hpp"
+#include <string>
 
 int main()
 {
-    const sf::Time TimePerFrame = sf::seconds(1.f / 60.f);
+    // general parameters for the scenario
+
     int width = 700;
     int height = 700;
-    float adjust = 1.f;
     int maxVelocity = 200;
-    int particleSize = 10.f;
+    int particleSize = 5.f;
+    int numParticles = 250;
+
+    // used to ensure a constant deltaTime
+
+    const sf::Time TimePerFrame = sf::seconds(1.f / 60.f);
+
+    // these are used to measure performance
+
+    sf::Font font;
+    sf::Text updateText;
+    // sf::Time updateTime;
+    // std::size_t frames = 0;
+
+    font.loadFromFile("../sansation.ttf");
+    updateText.setFont(font);
+    updateText.setPosition(5.f, 5.f);
+    updateText.setCharacterSize(10u);
+    updateText.setFillColor(sf::Color::Black);
+
+    // set up render window
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Quad Tree Example");
 
-    sf::Vector2f position = sf::Vector2f(width * (1.f - adjust) / 2.f, height * (1.f - adjust) / 2.f);
-    sf::Vector2f size = sf::Vector2f(width * adjust, height * adjust);
+    sf::Vector2f position = sf::Vector2f(0.f, 0.f);
+    sf::Vector2f size = sf::Vector2f(width, height);
 
     // QuadTree qTree(position, size, 5);
 
@@ -28,7 +48,7 @@ int main()
 
     std::srand(std::time(nullptr));
 
-    for (int i = 0; i < 200; ++i)
+    for (int i = 0; i < numParticles; ++i)
     {
         // generate random position
 
@@ -47,8 +67,6 @@ int main()
         particle->setVelocity(xVelocity, yVelocity);
 
         particleSet.push_back(particle);
-
-        //std::cout << particleSet.size() << std::endl;
     }
 
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -65,12 +83,6 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            // if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            // {
-            //     Particle particle(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
-            //     qTree.addEntity(particle);
-            // }
         }
 
         window.clear(sf::Color::White);
@@ -84,6 +96,10 @@ int main()
             for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
                 (*itr)->update(TimePerFrame);
         }
+
+        // measure performance
+
+        updateText.setString("FPS: " + std::to_string(static_cast<int>(1.f / deltaTime.asSeconds())));
 
         for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
         {
@@ -104,6 +120,7 @@ int main()
         }
 
         window.draw(qTree);
+        window.draw(updateText);
         window.display();
     }
 
