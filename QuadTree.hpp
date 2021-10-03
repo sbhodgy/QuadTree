@@ -12,11 +12,13 @@ class QuadTree : public sf::Drawable
     typedef std::unique_ptr<QuadTree> Ptr;
 
 public:
-    QuadTree(sf::Vector2f position, sf::Vector2f size, int entityLimit);
+    QuadTree(sf::Vector2f position, sf::Vector2f size, size_t entityLimit);
 
     void addEntity(Particle entity);
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+
+    void clear();
 
 private:
     void passEntity(Particle particle);

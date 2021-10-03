@@ -1,6 +1,6 @@
 #include "QuadTree.hpp"
 
-QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size, int entityLimit)
+QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size, size_t entityLimit)
     : mEntityLimit(entityLimit),
       mQuad(size),
       mDivided(false),
@@ -16,10 +16,10 @@ void QuadTree::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(mQuad, states);
 
-    for (auto itr = mEntities.begin(); itr < mEntities.end(); ++itr)
-    {
-        target.draw(itr->mParticle, states);
-    }
+    // for (auto itr = mEntities.begin(); itr < mEntities.end(); ++itr)
+    // {
+    //     target.draw(itr->mParticle, states);
+    // }
 
     if (mDivided == true)
     {
@@ -69,4 +69,9 @@ void QuadTree::divideQuad()
     mEntities.clear();
 
     mDivided = true;
+}
+
+void QuadTree::clear()
+{
+
 }
