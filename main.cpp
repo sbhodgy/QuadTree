@@ -1,3 +1,4 @@
+#include "AssetManager.hpp"
 #include "QuadTree.hpp"
 #include "Particle.hpp"
 
@@ -14,7 +15,7 @@ int main()
     int height = 700;
     int maxVelocity = 200;
     int particleSize = 5.f;
-    int numParticles = 250;
+    int numParticles = 100;
 
     // used to ensure a constant deltaTime
 
@@ -40,7 +41,9 @@ int main()
     sf::Vector2f position = sf::Vector2f(0.f, 0.f);
     sf::Vector2f size = sf::Vector2f(width, height);
 
-    std::vector<std::shared_ptr<Particle>> particleSet;
+    AssetManager particleMgr;
+
+    // std::vector<std::shared_ptr<Particle>> particleSet;
 
     sf::Clock clock;
 
@@ -64,7 +67,9 @@ int main()
 
         particle->setVelocity(xVelocity, yVelocity);
 
-        particleSet.push_back(particle);
+        particleMgr.addParticle(particle);
+
+        // particleSet.push_back(particle);
     }
 
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -75,7 +80,7 @@ int main()
 
         sf::Event event;
 
-        QuadTree qTree(position, size);
+        // QuadTree qTree(position, size);
 
         while (window.pollEvent(event))
         {
@@ -91,33 +96,38 @@ int main()
         {
             timeSinceLastUpdate -= TimePerFrame;
 
-            for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-                (*itr)->update(TimePerFrame);
+            particleMgr.update(TimePerFrame);
+
+            // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+            //     (*itr)->update(TimePerFrame);
         }
 
         // measure performance
 
         updateText.setString("FPS: " + std::to_string(static_cast<int>(1.f / deltaTime.asSeconds())));
 
-        for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-        {
-            qTree.addEntity(*itr);
-        }
+        // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+        // {
+        //     qTree.addEntity(*itr);
+        // }
 
-        qTree.checkCollisions();
+        // qTree.checkCollisions();
 
-        for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-        {
-            if ((*itr)->isColliding == true)
-                (*itr)->mParticle.setFillColor(sf::Color::Red);
-            else
-                (*itr)->mParticle.setFillColor(sf::Color::Green);
+        // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
+        // {
+        //     if ((*itr)->isColliding == true)
+        //         (*itr)->mParticle.setFillColor(sf::Color::Red);
+        //     else
+        //         (*itr)->mParticle.setFillColor(sf::Color::Green);
 
-            (*itr)->draw(window);
-            (*itr)->isColliding = false;
-        }
+        //     (*itr)->draw(window);
+        //     (*itr)->isColliding = false;
+        // }
 
-        qTree.draw(window);
+        // qTree.draw(window);
+
+        particleMgr.draw(window);
+        
         window.draw(updateText);
         window.display();
     }

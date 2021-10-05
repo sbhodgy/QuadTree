@@ -1,7 +1,7 @@
 #include "AssetManager.hpp"
 
 AssetManager::AssetManager()
-    : mQuad(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f))
+: mQuad(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f))
 {
 }
 
@@ -16,22 +16,37 @@ void AssetManager::update(sf::Time dt)
     {
         itr->update(dt);
     }
+
+    buildQuadTree();
+}
+
+void AssetManager::buildQuadTree()
+{
+    // initialise the quad tree
+
+    mQuad = QuadTree(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f));
+
+        // add particles to the quad tree
+
+        for (auto itr : mParticles)
+    {
+        mQuad.addEntity(itr);
+    }
 }
 
 void AssetManager::detectCollisions()
 {
-    // create quad tree object
-
-    // QuadTree quadTree(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f));
-
-    // add particles to the quad tree
+    mQuad.checkCollisions();
 
     for (auto itr : mParticles)
     {
-        mQuad.addEntity(itr);
-    }
+        if (itr->isColliding == true)
+            itr->mParticle.setFillColor(sf::Color::Red);
+        else
+            itr->mParticle.setFillColor(sf::Color::Green);
 
-    mQuad.checkCollisions();
+        itr->isColliding = false;
+    }
 }
 
 void AssetManager::draw(sf::RenderWindow &window)

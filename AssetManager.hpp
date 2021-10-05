@@ -21,6 +21,8 @@ public:
     void draw(sf::RenderWindow &window);
 
 private:
+    void buildQuadTree();
+
 private:
     std::vector<Ptr> mParticles;
     QuadTree mQuad;
