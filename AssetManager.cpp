@@ -1,7 +1,7 @@
 #include "AssetManager.hpp"
 
 AssetManager::AssetManager()
-: mQuad(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f))
+: mQuad(sf::Vector2f(200.f, 200.f), sf::Vector2f(300.f, 300.f))
 {
 }
 
@@ -24,7 +24,7 @@ void AssetManager::buildQuadTree()
 {
     // initialise the quad tree
 
-    mQuad = QuadTree(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f));
+    mQuad = QuadTree(sf::Vector2f(200.f, 200.f), sf::Vector2f(300.f, 300.f));
 
         // add particles to the quad tree
 
@@ -51,6 +51,8 @@ void AssetManager::detectCollisions()
 
 void AssetManager::draw(sf::RenderWindow &window)
 {
+    detectCollisions();
+
     for (auto itr : mParticles)
     {
         itr->draw(window);

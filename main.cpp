@@ -15,7 +15,7 @@ int main()
     int height = 700;
     int maxVelocity = 200;
     int particleSize = 5.f;
-    int numParticles = 100;
+    int numParticles = 500;
 
     // used to ensure a constant deltaTime
 
