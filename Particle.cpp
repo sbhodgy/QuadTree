@@ -29,3 +29,8 @@ void Particle::update(sf::Time dt)
     else
         mVelocity.y = -mVelocity.y;
 }
+
+void Particle::draw(sf::RenderWindow &window)
+{
+    window.draw(mParticle);
+}

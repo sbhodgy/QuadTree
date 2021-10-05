@@ -1,32 +1,27 @@
 #include "QuadTree.hpp"
 
-QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size, size_t entityLimit)
-    : mEntityLimit(entityLimit),
+QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
+    : mEntityLimit(5),
       mQuad(size),
       mDivided(false),
       mMinQuadSize(5.f)
 {
     mQuad.setPosition(position);
     mQuad.setFillColor(sf::Color::Transparent);
-    mQuad.setOutlineColor(sf::Color::Black);
+    mQuad.setOutlineColor(sf::Color::White);
     mQuad.setOutlineThickness(-1.f);
 }
 
-void QuadTree::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void QuadTree::draw(sf::RenderTarget &window)
 {
-    target.draw(mQuad, states);
-
-    // for (auto itr = mEntities.begin(); itr < mEntities.end(); ++itr)
-    // {
-    //     target.draw(itr->mParticle, states);
-    // }
+    window.draw(mQuad);
 
     if (mDivided == true)
     {
-        mQuadNorthEast->draw(target, states);
-        mQuadNorthWest->draw(target, states);
-        mQuadSouthWest->draw(target, states);
-        mQuadSouthEast->draw(target, states);
+        mQuadNorthEast->draw(window);
+        mQuadNorthWest->draw(window);
+        mQuadSouthWest->draw(window);
+        mQuadSouthEast->draw(window);
     }
 }
 
@@ -56,10 +51,10 @@ void QuadTree::divideQuad()
     float w = mQuad.getSize().x;
     float h = mQuad.getSize().y;
 
-    mQuadNorthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y), sf::Vector2f(w / 2.f, h / 2.f), mEntityLimit));
-    mQuadNorthWest = Ptr(new QuadTree(sf::Vector2f(x, y), sf::Vector2f(w / 2.f, h / 2.f), mEntityLimit));
-    mQuadSouthWest = Ptr(new QuadTree(sf::Vector2f(x, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f), mEntityLimit));
-    mQuadSouthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f), mEntityLimit));
+    mQuadNorthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadNorthWest = Ptr(new QuadTree(sf::Vector2f(x, y), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadSouthWest = Ptr(new QuadTree(sf::Vector2f(x, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadSouthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
 
     for (auto itr = mEntities.begin(); itr != mEntities.end(); ++itr)
     {
@@ -93,5 +88,17 @@ void QuadTree::checkCollisions()
         mQuadNorthWest->checkCollisions();
         mQuadSouthWest->checkCollisions();
         mQuadSouthEast->checkCollisions();
+    }
+}
+
+void QuadTree::clear()
+{
+    if(mDivided == true)
+    {
+        // delete &mQuadNorthEast;
+    }
+    else
+    {
+        // delete this;
     }
 }

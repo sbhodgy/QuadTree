@@ -31,7 +31,7 @@ int main()
     updateText.setFont(font);
     updateText.setPosition(5.f, 5.f);
     updateText.setCharacterSize(10u);
-    updateText.setFillColor(sf::Color::Black);
+    updateText.setFillColor(sf::Color::White);
 
     // set up render window
 
@@ -39,8 +39,6 @@ int main()
 
     sf::Vector2f position = sf::Vector2f(0.f, 0.f);
     sf::Vector2f size = sf::Vector2f(width, height);
-
-    // QuadTree qTree(position, size, 5);
 
     std::vector<std::shared_ptr<Particle>> particleSet;
 
@@ -77,7 +75,7 @@ int main()
 
         sf::Event event;
 
-        QuadTree qTree(position, size, 5);
+        QuadTree qTree(position, size);
 
         while (window.pollEvent(event))
         {
@@ -85,7 +83,7 @@ int main()
                 window.close();
         }
 
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Black);
 
         timeSinceLastUpdate += deltaTime;
 
@@ -115,11 +113,11 @@ int main()
             else
                 (*itr)->mParticle.setFillColor(sf::Color::Green);
 
-            window.draw((*itr)->mParticle);
+            (*itr)->draw(window);
             (*itr)->isColliding = false;
         }
 
-        window.draw(qTree);
+        qTree.draw(window);
         window.draw(updateText);
         window.display();
     }

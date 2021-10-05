@@ -6,7 +6,7 @@ enable_testing()
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_executable(QuadTree main.cpp QuadTree.cpp Particle.cpp)
+add_executable(QuadTree main.cpp QuadTree.cpp Particle.cpp AssetManager.cpp)
 
 target_link_libraries(QuadTree sfml-graphics sfml-window sfml-system)
 

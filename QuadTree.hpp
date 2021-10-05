@@ -7,18 +7,20 @@
 
 #include "Particle.hpp"
 
-class QuadTree : public sf::Drawable
+class QuadTree
 {
     typedef std::unique_ptr<QuadTree> Ptr;
 
 public:
-    QuadTree(sf::Vector2f position, sf::Vector2f size, size_t entityLimit);
+    QuadTree(sf::Vector2f position, sf::Vector2f size);
 
     void addEntity(std::shared_ptr<Particle> particle);
 
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget &target);
 
     void checkCollisions();
+
+    void clear();
 
 private:
     void passEntity(std::shared_ptr<Particle> particle);
