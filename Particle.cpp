@@ -32,10 +32,6 @@ void Particle::update(sf::Time dt)
 
 void Particle::draw(sf::RenderWindow &window)
 {
-    // if (isColliding == true)
-    //     mParticle.setFillColor(sf::Color::Red);
-    // else
-    //     mParticle.setFillColor(sf::Color::Green);
     window.draw(mParticle);
 
     isColliding = false;

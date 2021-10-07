@@ -15,7 +15,9 @@ int main()
     int height = 700;
     int maxVelocity = 200;
     int particleSize = 5.f;
-    int numParticles = 500;
+    int numParticles = 10;
+
+    std::vector<Particle> mParticles;
 
     // used to ensure a constant deltaTime
 
@@ -23,10 +25,11 @@ int main()
 
     // these are used to measure performance
 
+    sf::Time updateTime;
+    std::size_t numFrames;
+
     sf::Font font;
     sf::Text updateText;
-    // sf::Time updateTime;
-    // std::size_t frames = 0;
 
     font.loadFromFile("../sansation.ttf");
     updateText.setFont(font);
@@ -38,14 +41,9 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Quad Tree Example");
 
-    sf::Vector2f position = sf::Vector2f(0.f, 0.f);
-    sf::Vector2f size = sf::Vector2f(width, height);
+    // create particles and add to the particle manager
 
     AssetManager particleMgr;
-
-    // std::vector<std::shared_ptr<Particle>> particleSet;
-
-    sf::Clock clock;
 
     std::srand(std::time(nullptr));
 
@@ -67,10 +65,12 @@ int main()
 
         particle->setVelocity(xVelocity, yVelocity);
 
-        particleMgr.addParticle(particle);
+        // particleMgr.addParticle(particle);
 
-        // particleSet.push_back(particle);
+        mParticles.push_back(*particle);
     }
+
+    sf::Clock clock;
 
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
 
@@ -80,15 +80,11 @@ int main()
 
         sf::Event event;
 
-        // QuadTree qTree(position, size);
-
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
-        window.clear(sf::Color::Black);
 
         timeSinceLastUpdate += deltaTime;
 
@@ -96,38 +92,32 @@ int main()
         {
             timeSinceLastUpdate -= TimePerFrame;
 
-            particleMgr.update(TimePerFrame);
-
-            // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-            //     (*itr)->update(TimePerFrame);
+            // particleMgr.update(TimePerFrame);
         }
 
         // measure performance
 
-        updateText.setString("FPS: " + std::to_string(static_cast<int>(1.f / deltaTime.asSeconds())));
+        updateTime += deltaTime;
+        numFrames += 1;
 
-        // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-        // {
-        //     qTree.addEntity(*itr);
-        // }
+        if (updateTime >= sf::seconds(1.0f))
+        {
+            updateText.setString("FPS: " + std::to_string(numFrames) + "\n" +
+                                 std::to_string(updateTime.asMicroseconds() / numFrames));
 
-        // qTree.checkCollisions();
+            updateTime -= sf::seconds(1.0f);
+            numFrames = 0;
+        }
 
-        // for (auto itr = particleSet.begin(); itr != particleSet.end(); ++itr)
-        // {
-        //     if ((*itr)->isColliding == true)
-        //         (*itr)->mParticle.setFillColor(sf::Color::Red);
-        //     else
-        //         (*itr)->mParticle.setFillColor(sf::Color::Green);
+        // render particles and quad tree boundaries
 
-        //     (*itr)->draw(window);
-        //     (*itr)->isColliding = false;
-        // }
+        window.clear(sf::Color::Black);
 
-        // qTree.draw(window);
-
-        particleMgr.draw(window);
-        
+        for (auto itr : mParticles)
+        {
+            itr.draw(window);
+        }
+        // particleMgr.draw(window);
         window.draw(updateText);
         window.display();
     }
