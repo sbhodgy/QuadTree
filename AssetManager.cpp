@@ -38,25 +38,25 @@ void AssetManager::detectCollisions()
 {
     mQuad.checkCollisions();
 
-    for (auto itr : mParticles)
-    {
-        if (itr->isColliding == true)
-            itr->mParticle.setFillColor(sf::Color::Red);
-        else
-            itr->mParticle.setFillColor(sf::Color::Green);
+    // for (auto itr : mParticles)
+    // {
+    //     if (itr->mColliding == true)
+    //         itr->mParticle.setFillColor(sf::Color::Red);
+    //     else
+    //         itr->mParticle.setFillColor(sf::Color::Green);
 
-        itr->isColliding = false;
-    }
+    //     itr->mColliding = false;
+    // }
 }
 
 void AssetManager::draw(sf::RenderWindow &window)
 {
-    // detectCollisions();
+    detectCollisions();
 
     for (auto itr : mParticles)
     {
         itr->draw(window);
     }
 
-    // mQuad.draw(window);
+    mQuad.draw(window);
 }

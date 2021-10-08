@@ -15,7 +15,7 @@ int main()
     int height = 700;
     int maxVelocity = 200;
     int particleSize = 5.f;
-    int numParticles = 10;
+    int numParticles = 400;
 
     std::vector<Particle> mParticles;
 
@@ -27,6 +27,7 @@ int main()
 
     sf::Time updateTime;
     std::size_t numFrames;
+    std::size_t numUpdates;
 
     sf::Font font;
     sf::Text updateText;
@@ -61,13 +62,13 @@ int main()
 
         // create the particle and add to the quad tree
 
-        std::shared_ptr<Particle> particle(new Particle(sf::Vector2f(xPosition, yPosition), particleSize));
+        std::shared_ptr<Asset> particle(new Particle(sf::Vector2f(xPosition, yPosition), particleSize));
 
         particle->setVelocity(xVelocity, yVelocity);
 
-        // particleMgr.addParticle(particle);
+        particleMgr.addParticle(particle);
 
-        mParticles.push_back(*particle);
+        // mParticles.push_back(*particle);
     }
 
     sf::Clock clock;
@@ -92,7 +93,9 @@ int main()
         {
             timeSinceLastUpdate -= TimePerFrame;
 
-            // particleMgr.update(TimePerFrame);
+            particleMgr.update(TimePerFrame);
+
+            numUpdates += 1;
         }
 
         // measure performance
@@ -102,22 +105,24 @@ int main()
 
         if (updateTime >= sf::seconds(1.0f))
         {
-            updateText.setString("FPS: " + std::to_string(numFrames) + "\n" +
-                                 std::to_string(updateTime.asMicroseconds() / numFrames));
+            updateText.setString("Frames / Second: " + std::to_string(numFrames) + "\n" +
+                                 "Time / Frame: " + std::to_string(updateTime.asSeconds() / numFrames) + "\n" +
+                                 "Updates / Second: " + std::to_string(numUpdates));
 
             updateTime -= sf::seconds(1.0f);
             numFrames = 0;
+            numUpdates = 0;
         }
 
         // render particles and quad tree boundaries
 
         window.clear(sf::Color::Black);
 
-        for (auto itr : mParticles)
-        {
-            itr.draw(window);
-        }
-        // particleMgr.draw(window);
+        // for (auto itr : mParticles)
+        // {
+        //     itr.draw(window);
+        // }
+        particleMgr.draw(window);
         window.draw(updateText);
         window.display();
     }

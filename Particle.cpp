@@ -1,9 +1,9 @@
 #include "Particle.hpp"
 
 Particle::Particle(sf::Vector2f position, float size)
-    : mParticle(sf::Vector2f(size, size)),
-      isColliding(false)
+    // : mParticle(sf::Vector2f(size, size))
 {
+    mParticle.setSize(sf::Vector2f(size, size));
     mParticle.setPosition(position);
     mParticle.setFillColor(sf::Color::Red);
 }
@@ -34,5 +34,11 @@ void Particle::draw(sf::RenderWindow &window)
 {
     window.draw(mParticle);
 
-    isColliding = false;
+    mColliding = false;
 }
+
+sf::FloatRect Particle::getBounds()
+{
+    return mParticle.getGlobalBounds();
+}
+

@@ -25,18 +25,18 @@ void QuadTree::draw(sf::RenderTarget &window)
     }
 }
 
-void QuadTree::addEntity(std::shared_ptr<Particle> particle)
+void QuadTree::addEntity(std::shared_ptr<Asset> particle)
 {
     if (mDivided == true)
         passEntity(particle);
-    else if (mQuad.getGlobalBounds().intersects(particle->mParticle.getGlobalBounds()))
+    else if (mQuad.getGlobalBounds().intersects(particle->getBounds()))
         mEntities.push_back(particle);
 
     if (mEntities.size() == mEntityLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
         divideQuad();
 }
 
-void QuadTree::passEntity(std::shared_ptr<Particle> particle)
+void QuadTree::passEntity(std::shared_ptr<Asset> particle)
 {
     // pass the entity to the children quads. 
     // the children will check for inclusion / exclusion
@@ -85,10 +85,10 @@ void QuadTree::checkCollisions()
     {
         for (auto itr2 = std::next(itr1, 1); itr2 != mEntities.end(); ++itr2)
         {
-            if ((*itr1)->mParticle.getGlobalBounds().intersects((*itr2)->mParticle.getGlobalBounds()))
+            if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
             {
-                (*itr1)->isColliding = true;
-                (*itr2)->isColliding = true;
+                (*itr1)->mColliding = true;
+                (*itr2)->mColliding = true;
             }
         }
     }
@@ -99,17 +99,5 @@ void QuadTree::checkCollisions()
         mQuadNorthWest->checkCollisions();
         mQuadSouthWest->checkCollisions();
         mQuadSouthEast->checkCollisions();
-    }
-}
-
-void QuadTree::clear()
-{
-    if (mDivided == true)
-    {
-        // delete &mQuadNorthEast;
-    }
-    else
-    {
-        // delete this;
     }
 }

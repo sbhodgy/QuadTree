@@ -1,9 +1,11 @@
 #ifndef PARTICLE_HPP
 #define PARTICLE_HPP
 
+#include "Asset.hpp"
+
 #include <SFML/Graphics.hpp>
 
-class Particle
+class Particle : public Asset
 {
 public:
     Particle(sf::Vector2f position, float size);
@@ -14,10 +16,11 @@ public:
 
     void draw(sf::RenderWindow &window);
 
-public:
+    sf::FloatRect getBounds();
+
+private:
     sf::RectangleShape mParticle;
     sf::Vector2f mVelocity;
-    bool isColliding;
 };
 
 #endif // PARTICLE_HPP
