@@ -1,7 +1,7 @@
 #include "QuadTree.hpp"
 
 QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
-    : mEntityLimit(5),
+    : mEntityLimit(20),
       mQuad(size),
       mDivided(false),
       mMinQuadSize(5.f)
@@ -25,26 +25,26 @@ void QuadTree::draw(sf::RenderTarget &window)
     }
 }
 
-void QuadTree::addEntity(std::shared_ptr<Asset> particle)
+void QuadTree::addEntity(std::shared_ptr<Entity> entity)
 {
     if (mDivided == true)
-        passEntity(particle);
-    else if (mQuad.getGlobalBounds().intersects(particle->getBounds()))
-        mEntities.push_back(particle);
+        passEntity(entity);
+    else if (mQuad.getGlobalBounds().intersects(entity->getBounds()))
+        mEntities.push_back(entity);
 
     if (mEntities.size() == mEntityLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
         divideQuad();
 }
 
-void QuadTree::passEntity(std::shared_ptr<Asset> particle)
+void QuadTree::passEntity(std::shared_ptr<Entity> entity)
 {
     // pass the entity to the children quads. 
     // the children will check for inclusion / exclusion
 
-    mQuadNorthEast->addEntity(particle);
-    mQuadNorthWest->addEntity(particle);
-    mQuadSouthWest->addEntity(particle);
-    mQuadSouthEast->addEntity(particle);
+    mQuadNorthEast->addEntity(entity);
+    mQuadNorthWest->addEntity(entity);
+    mQuadSouthWest->addEntity(entity);
+    mQuadSouthEast->addEntity(entity);
 }
 
 void QuadTree::divideQuad()

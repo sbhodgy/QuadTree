@@ -1,14 +1,12 @@
-#ifndef PARTICLE_HPP
-#define PARTICLE_HPP
-
-#include "Asset.hpp"
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
 #include <SFML/Graphics.hpp>
 
-class Particle : public Asset
+class Entity
 {
 public:
-    Particle(sf::Vector2f position, float size);
+    Entity(sf::Vector2f position, float size);
 
     void setVelocity(float vx, float vy);
 
@@ -18,8 +16,11 @@ public:
 
     sf::FloatRect getBounds();
 
+public:
+    bool mColliding;
+    sf::RectangleShape mEntity;
+
 private:
-    sf::RectangleShape mParticle;
     sf::Vector2f mVelocity;
 };
 

@@ -3,16 +3,18 @@
 
 #include "QuadTree.hpp"
 
+#include "Entity.hpp"
+
 #include <memory>
 
 class AssetManager
 {
-    typedef std::shared_ptr<Particle> Ptr;
+    typedef std::shared_ptr<Entity> Ptr;
 
 public:
     AssetManager();
 
-    void addParticle(Ptr particle);
+    void addEntity(Ptr entity);
 
     void update(sf::Time dt);
 
@@ -24,7 +26,7 @@ private:
     void buildQuadTree();
 
 private:
-    std::vector<Ptr> mParticles;
+    std::vector<Ptr> mEntities;
     QuadTree mQuad;
 };
 

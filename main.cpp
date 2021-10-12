@@ -1,6 +1,7 @@
 #include "AssetManager.hpp"
-#include "QuadTree.hpp"
-#include "Particle.hpp"
+// #include "QuadTree.hpp"
+
+#include "Entity.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -13,11 +14,9 @@ int main()
 
     int width = 700;
     int height = 700;
-    int maxVelocity = 200;
-    int particleSize = 5.f;
-    int numParticles = 400;
-
-    std::vector<Particle> mParticles;
+    int maxVelocity = 100;
+    int entitySize = 5.f;
+    int numEntities = 400;
 
     // used to ensure a constant deltaTime
 
@@ -48,12 +47,12 @@ int main()
 
     std::srand(std::time(nullptr));
 
-    for (int i = 0; i < numParticles; ++i)
+    for (int i = 0; i < numEntities; ++i)
     {
         // generate random position
 
-        float xPosition = rand() % (width - particleSize);
-        float yPosition = rand() % (height - particleSize);
+        float xPosition = rand() % (width - entitySize);
+        float yPosition = rand() % (height - entitySize);
 
         // generate random velocity
 
@@ -62,11 +61,11 @@ int main()
 
         // create the particle and add to the quad tree
 
-        std::shared_ptr<Asset> particle(new Particle(sf::Vector2f(xPosition, yPosition), particleSize));
+        std::shared_ptr<Entity> particle(new Entity(sf::Vector2f(xPosition, yPosition), entitySize));
 
         particle->setVelocity(xVelocity, yVelocity);
 
-        particleMgr.addParticle(particle);
+        particleMgr.addEntity(particle);
 
         // mParticles.push_back(*particle);
     }

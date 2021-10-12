@@ -5,7 +5,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#include "Particle.hpp"
+#include "Entity.hpp"
 
 class QuadTree
 {
@@ -14,19 +14,19 @@ class QuadTree
 public:
     QuadTree(sf::Vector2f position, sf::Vector2f size);
 
-    void addEntity(std::shared_ptr<Asset> particle);
+    void addEntity(std::shared_ptr<Entity> entity);
 
     void draw(sf::RenderTarget &target);
 
     void checkCollisions();
 
 private:
-    void passEntity(std::shared_ptr<Asset> particle);
+    void passEntity(std::shared_ptr<Entity> entity);
 
     void divideQuad();
 
 private:
-    std::vector<std::shared_ptr<Asset>> mEntities;
+    std::vector<std::shared_ptr<Entity>> mEntities;
     sf::RectangleShape mQuad;
     float mMinQuadSize;
     size_t mEntityLimit;

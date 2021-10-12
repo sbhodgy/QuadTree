@@ -1,18 +1,18 @@
 #include "AssetManager.hpp"
 
 AssetManager::AssetManager()
-    : mQuad(sf::Vector2f(200.f, 200.f), sf::Vector2f(300.f, 300.f))
+    : mQuad(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f))
 {
 }
 
-void AssetManager::addParticle(Ptr particle)
+void AssetManager::addEntity(Ptr entity)
 {
-    mParticles.push_back(particle);
+    mEntities.push_back(entity);
 }
 
 void AssetManager::update(sf::Time dt)
 {
-    for (auto itr : mParticles)
+    for (auto itr : mEntities)
     {
         itr->update(dt);
     }
@@ -24,11 +24,11 @@ void AssetManager::buildQuadTree()
 {
     // initialise the quad tree
 
-    mQuad = QuadTree(sf::Vector2f(200.f, 200.f), sf::Vector2f(300.f, 300.f));
+    mQuad = QuadTree(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f));
 
-    // add particles to the quad tree
+    // add Entities to the quad tree
 
-    for (auto itr : mParticles)
+    for (auto itr : mEntities)
     {
         mQuad.addEntity(itr);
     }
@@ -38,22 +38,22 @@ void AssetManager::detectCollisions()
 {
     mQuad.checkCollisions();
 
-    // for (auto itr : mParticles)
-    // {
-    //     if (itr->mColliding == true)
-    //         itr->mParticle.setFillColor(sf::Color::Red);
-    //     else
-    //         itr->mParticle.setFillColor(sf::Color::Green);
+    for (auto itr : mEntities)
+    {
+        if (itr->mColliding == true)
+            itr->mEntity.setFillColor(sf::Color::Red);
+        else
+            itr->mEntity.setFillColor(sf::Color::Green);
 
-    //     itr->mColliding = false;
-    // }
+        itr->mColliding = false;
+    }
 }
 
 void AssetManager::draw(sf::RenderWindow &window)
 {
     detectCollisions();
 
-    for (auto itr : mParticles)
+    for (auto itr : mEntities)
     {
         itr->draw(window);
     }
