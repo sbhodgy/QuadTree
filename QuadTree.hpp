@@ -31,6 +31,7 @@ private:
     float mMinQuadSize;
     size_t mEntityLimit;
     bool mDivided;
+    bool mMovingEntities;
 
     // pointer to the four new
     Ptr mQuadNorthEast;

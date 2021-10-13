@@ -41,9 +41,9 @@ void AssetManager::detectCollisions()
     for (auto itr : mEntities)
     {
         if (itr->mColliding == true)
-            itr->mEntity.setFillColor(sf::Color::Red);
+            itr->setColor(sf::Color::Red);
         else
-            itr->mEntity.setFillColor(sf::Color::Green);
+            itr->setColor(sf::Color::Green);
 
         itr->mColliding = false;
     }

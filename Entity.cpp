@@ -41,3 +41,13 @@ sf::FloatRect Entity::getBounds()
     return mEntity.getGlobalBounds();
 }
 
+void Entity::setColor(sf::Color color)
+{
+    mEntity.setFillColor(color);
+}
+
+bool Entity::isMoving()
+{
+    return (mVelocity.x != 0 || mVelocity.y != 0);
+}
+

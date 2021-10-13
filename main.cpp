@@ -14,9 +14,9 @@ int main()
 
     int width = 700;
     int height = 700;
-    int maxVelocity = 100;
+    int maxVelocity = 200;
     int entitySize = 5.f;
-    int numEntities = 400;
+    int numEntities = 350;
 
     // used to ensure a constant deltaTime
 
@@ -34,7 +34,7 @@ int main()
     font.loadFromFile("../sansation.ttf");
     updateText.setFont(font);
     updateText.setPosition(5.f, 5.f);
-    updateText.setCharacterSize(10u);
+    updateText.setCharacterSize(15u);
     updateText.setFillColor(sf::Color::White);
 
     // set up render window
@@ -63,7 +63,8 @@ int main()
 
         std::shared_ptr<Entity> particle(new Entity(sf::Vector2f(xPosition, yPosition), entitySize));
 
-        particle->setVelocity(xVelocity, yVelocity);
+        if (i < 10)//numEntities / 4)
+            particle->setVelocity(xVelocity, yVelocity);
 
         particleMgr.addEntity(particle);
 

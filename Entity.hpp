@@ -16,11 +16,15 @@ public:
 
     sf::FloatRect getBounds();
 
+    void setColor(sf::Color color);
+
+     bool isMoving();
+
 public:
     bool mColliding;
-    sf::RectangleShape mEntity;
 
 private:
+    sf::RectangleShape mEntity;
     sf::Vector2f mVelocity;
 };
 

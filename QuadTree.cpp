@@ -4,6 +4,7 @@ QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
     : mEntityLimit(20),
       mQuad(size),
       mDivided(false),
+      mMovingEntities(false),
       mMinQuadSize(5.f)
 {
     mQuad.setPosition(position);
@@ -14,7 +15,6 @@ QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
 
 void QuadTree::draw(sf::RenderTarget &window)
 {
-    window.draw(mQuad);
 
     if (mDivided == true)
     {
@@ -23,6 +23,13 @@ void QuadTree::draw(sf::RenderTarget &window)
         mQuadSouthWest->draw(window);
         mQuadSouthEast->draw(window);
     }
+    else
+    {
+        if (mMovingEntities == true)
+            mQuad.setOutlineColor(sf::Color::Red);
+
+        window.draw(mQuad);
+    }
 }
 
 void QuadTree::addEntity(std::shared_ptr<Entity> entity)
@@ -30,7 +37,12 @@ void QuadTree::addEntity(std::shared_ptr<Entity> entity)
     if (mDivided == true)
         passEntity(entity);
     else if (mQuad.getGlobalBounds().intersects(entity->getBounds()))
+    {
         mEntities.push_back(entity);
+
+        if (entity->isMoving() == true)
+            mMovingEntities = true;
+    }
 
     if (mEntities.size() == mEntityLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
         divideQuad();
@@ -38,7 +50,7 @@ void QuadTree::addEntity(std::shared_ptr<Entity> entity)
 
 void QuadTree::passEntity(std::shared_ptr<Entity> entity)
 {
-    // pass the entity to the children quads. 
+    // pass the entity to the children quads.
     // the children will check for inclusion / exclusion
 
     mQuadNorthEast->addEntity(entity);
@@ -77,27 +89,30 @@ void QuadTree::divideQuad()
     // flag that the current quad has been divided
 
     mDivided = true;
+    mMovingEntities = false;
 }
 
 void QuadTree::checkCollisions()
 {
-    for (auto itr1 = mEntities.begin(); itr1 != mEntities.end(); ++itr1)
-    {
-        for (auto itr2 = std::next(itr1, 1); itr2 != mEntities.end(); ++itr2)
-        {
-            if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
-            {
-                (*itr1)->mColliding = true;
-                (*itr2)->mColliding = true;
-            }
-        }
-    }
-
     if (mDivided == true)
     {
         mQuadNorthEast->checkCollisions();
         mQuadNorthWest->checkCollisions();
         mQuadSouthWest->checkCollisions();
         mQuadSouthEast->checkCollisions();
+    }
+    else if (mMovingEntities == true)
+    {
+        for (auto itr1 = mEntities.begin(); itr1 != mEntities.end(); ++itr1)
+        {
+            for (auto itr2 = std::next(itr1, 1); itr2 != mEntities.end(); ++itr2)
+            {
+                if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
+                {
+                    (*itr1)->mColliding = true;
+                    (*itr2)->mColliding = true;
+                }
+            }
+        }
     }
 }
