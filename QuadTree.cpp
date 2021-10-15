@@ -1,10 +1,12 @@
 #include "QuadTree.hpp"
 
+#include "Entity.hpp"
+
 QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
-    : mEntityLimit(20),
+    : mAssetLimit(20),
       mQuad(size),
       mDivided(false),
-      mMovingEntities(false),
+      mMovingAssets(false),
       mMinQuadSize(5.f)
 {
     mQuad.setPosition(position);
@@ -25,38 +27,38 @@ void QuadTree::draw(sf::RenderTarget &window)
     }
     else
     {
-        if (mMovingEntities == true)
+        if (mMovingAssets == true)
             mQuad.setOutlineColor(sf::Color::Red);
 
         window.draw(mQuad);
     }
 }
 
-void QuadTree::addEntity(assetPtr entity)
+void QuadTree::addAsset(assetPtr asset)
 {
     if (mDivided == true)
-        passEntity(entity);
-    else if (mQuad.getGlobalBounds().intersects(dynamic_cast<Entity&>(*entity).getBounds()))
+        passAsset(asset);
+    else if (mQuad.getGlobalBounds().intersects(dynamic_cast<Entity &>(*asset).getBounds()))
     {
-        mEntities.push_back(entity);
+        mAssets.push_back(asset);
 
-        // if (entity->isMoving() == true)
-        //     mMovingEntities = true;
+        // if (asset->isMoving() == true)
+        //     mMovingAssets = true;
     }
 
-    if (mEntities.size() == mEntityLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
+    if (mAssets.size() == mAssetLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
         divideQuad();
 }
 
-void QuadTree::passEntity(assetPtr entity)
+void QuadTree::passAsset(assetPtr asset)
 {
-    // pass the entity to the children quads.
+    // pass the asset to the children quads.
     // the children will check for inclusion / exclusion
 
-    mQuadNorthEast->addEntity(entity);
-    mQuadNorthWest->addEntity(entity);
-    mQuadSouthWest->addEntity(entity);
-    mQuadSouthEast->addEntity(entity);
+    mQuadNorthEast->addAsset(asset);
+    mQuadNorthWest->addAsset(asset);
+    mQuadSouthWest->addAsset(asset);
+    mQuadSouthEast->addAsset(asset);
 }
 
 void QuadTree::divideQuad()
@@ -70,26 +72,57 @@ void QuadTree::divideQuad()
 
     // create new quad objects and assign to the shared pointer variables
 
-    mQuadNorthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y), sf::Vector2f(w / 2.f, h / 2.f)));
-    mQuadNorthWest = Ptr(new QuadTree(sf::Vector2f(x, y), sf::Vector2f(w / 2.f, h / 2.f)));
-    mQuadSouthWest = Ptr(new QuadTree(sf::Vector2f(x, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
-    mQuadSouthEast = Ptr(new QuadTree(sf::Vector2f(x + w / 2.f, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadNorthEast = quadPtr(new QuadTree(sf::Vector2f(x + w / 2.f, y), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadNorthWest = quadPtr(new QuadTree(sf::Vector2f(x, y), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadSouthWest = quadPtr(new QuadTree(sf::Vector2f(x, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
+    mQuadSouthEast = quadPtr(new QuadTree(sf::Vector2f(x + w / 2.f, y + h / 2.f), sf::Vector2f(w / 2.f, h / 2.f)));
 
-    // pass the entities in the current quad to the children quads
+    // pass assets in the current quad to the children quads
 
-    for (auto itr = mEntities.begin(); itr != mEntities.end(); ++itr)
+    for (auto itr = mAssets.begin(); itr != mAssets.end(); ++itr)
     {
-        passEntity(*itr);
+        passAsset(*itr);
     }
 
-    // remove the entities from the current quad
+    // remove assets from the current quad
 
-    mEntities.clear();
+    mAssets.clear();
 
     // flag that the current quad has been divided
 
     mDivided = true;
-    mMovingEntities = false;
+    mMovingAssets = false;
+}
+
+void QuadTree::flockAssets()
+{
+    float x;
+    float y;
+
+    if (mDivided == false)
+    {
+        for (auto itr : mAssets)
+        {
+            sf::Vector2f vel = dynamic_cast<Entity &>(*itr).getVelocity();
+            x += vel.x;
+            y += vel.y;
+        }
+
+        float xAverage = x / mAssets.size();
+        float yAverage = y / mAssets.size();
+
+        for (auto itr : mAssets)
+        {
+            dynamic_cast<Entity &>(*itr).setVelocity(xAverage, yAverage);
+        }
+    }
+    else
+    {
+        mQuadNorthEast->flockAssets();
+        mQuadNorthWest->flockAssets();
+        mQuadSouthWest->flockAssets();
+        mQuadSouthEast->flockAssets();
+    }
 }
 
 void QuadTree::checkCollisions()
@@ -101,11 +134,11 @@ void QuadTree::checkCollisions()
         mQuadSouthWest->checkCollisions();
         mQuadSouthEast->checkCollisions();
     }
-    else if (mMovingEntities == true)
+    else if (mMovingAssets == true)
     {
-        for (auto itr1 = mEntities.begin(); itr1 != mEntities.end(); ++itr1)
+        for (auto itr1 = mAssets.begin(); itr1 != mAssets.end(); ++itr1)
         {
-            for (auto itr2 = std::next(itr1, 1); itr2 != mEntities.end(); ++itr2)
+            for (auto itr2 = std::next(itr1, 1); itr2 != mAssets.end(); ++itr2)
             {
                 // if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
                 // {

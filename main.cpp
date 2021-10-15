@@ -17,7 +17,7 @@ int main()
     int width = 700;
     int height = 700;
     int maxVelocity = 200;
-    int entitySize = 5.f;
+    int assetSize = 5.f;
     int numEntities = 350;
 
     // used to ensure a constant deltaTime
@@ -45,7 +45,7 @@ int main()
 
     // create particles and add to the particle manager
 
-    AssetManager particleMgr;
+    AssetManager assetManager;
 
     std::srand(std::time(nullptr));
 
@@ -53,8 +53,8 @@ int main()
     {
         // generate random position
 
-        float xPosition = rand() % (width - entitySize);
-        float yPosition = rand() % (height - entitySize);
+        float xPosition = rand() % (width - assetSize);
+        float yPosition = rand() % (height - assetSize);
 
         // generate random velocity
 
@@ -63,15 +63,15 @@ int main()
 
         // create the particle and add to the quad tree
 
-        std::shared_ptr<Asset> particle(new Entity(sf::Vector2f(xPosition, yPosition), entitySize));
+        std::shared_ptr<Asset> particle(new Entity(sf::Vector2f(xPosition, yPosition), assetSize));
 
-        if (i < numEntities / 4)
+        if (i < numEntities)// / 4)
         {
             dynamic_cast<Entity&>(*particle).setVelocity(xVelocity, yVelocity);
         }
             
 
-        particleMgr.addEntity(particle);
+        assetManager.addEntity(particle);
 
         // mParticles.push_back(*particle);
     }
@@ -98,7 +98,7 @@ int main()
         {
             timeSinceLastUpdate -= TimePerFrame;
 
-            particleMgr.update(TimePerFrame);
+            assetManager.update(TimePerFrame);
 
             numUpdates += 1;
         }
@@ -122,12 +122,7 @@ int main()
         // render particles and quad tree boundaries
 
         window.clear(sf::Color::Black);
-
-        // for (auto itr : mParticles)
-        // {
-        //     itr.draw(window);
-        // }
-        particleMgr.draw(window);
+        assetManager.draw(window);
         window.draw(updateText);
         window.display();
     }

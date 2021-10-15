@@ -5,19 +5,21 @@ AssetManager::AssetManager()
 {
 }
 
-void AssetManager::addEntity(Ptr entity)
+void AssetManager::addEntity(Ptr asset)
 {
-    mEntities.push_back(entity);
+    mAssets.push_back(asset);
 }
 
 void AssetManager::update(sf::Time dt)
 {
-    // for (auto itr : mEntities)
-    // {
-    //     itr->update(dt);
-    // }
+    for (auto itr : mAssets)
+    {
+        itr->update(dt);
+    }
 
     buildQuadTree();
+
+    mQuad.flockAssets();
 }
 
 void AssetManager::buildQuadTree()
@@ -26,11 +28,11 @@ void AssetManager::buildQuadTree()
 
     mQuad = QuadTree(sf::Vector2f(0.f, 0.f), sf::Vector2f(700.f, 700.f));
 
-    // add Entities to the quad tree
+    // add assets to the quad tree
 
-    for (auto itr : mEntities)
+    for (auto itr : mAssets)
     {
-        mQuad.addEntity(itr);
+        mQuad.addAsset(itr);
     }
 }
 
@@ -38,7 +40,7 @@ void AssetManager::detectCollisions()
 {
     mQuad.checkCollisions();
 
-    // for (auto itr : mEntities)
+    // for (auto itr : mAssets)
     // {
     //     if (itr->mColliding == true)
     //         itr->setColor(sf::Color::Red);
@@ -53,9 +55,9 @@ void AssetManager::draw(sf::RenderWindow &window)
 {
     detectCollisions();
 
-    for (auto itr : mEntities)
+    for (auto itr : mAssets)
     {
-        dynamic_cast<Entity&>(*itr).draw(window);
+        itr->draw(window);
     }
 
     // mQuad.draw(window);

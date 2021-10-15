@@ -14,6 +14,8 @@ public:
 
     void setVelocity(float vx, float vy);
 
+    sf::Vector2f getVelocity();
+
     void update(sf::Time dt);
 
     void draw(sf::RenderWindow &window);

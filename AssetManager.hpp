@@ -14,7 +14,7 @@ class AssetManager
 public:
     AssetManager();
 
-    void addEntity(Ptr entity);
+    void addEntity(Ptr asset);
 
     void update(sf::Time dt);
 
@@ -26,7 +26,7 @@ private:
     void buildQuadTree();
 
 private:
-    std::vector<Ptr> mEntities;
+    std::vector<Ptr> mAssets;
     QuadTree mQuad;
 };
 

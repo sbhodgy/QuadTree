@@ -13,6 +13,11 @@ void Entity::setVelocity(float vx, float vy)
     mVelocity.y = vy;
 }
 
+sf::Vector2f Entity::getVelocity()
+{
+    return mVelocity;
+}
+
 void Entity::update(sf::Time dt)
 {
     float xPosition = mEntity.getPosition().x + mVelocity.x * dt.asSeconds();
@@ -55,4 +60,3 @@ bool Entity::isMoving()
 {
     return (mVelocity.x != 0 || mVelocity.y != 0);
 }
-
