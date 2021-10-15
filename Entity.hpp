@@ -3,7 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 
-class Entity
+#include "Asset.hpp"
+
+#include "AssetType.hpp"
+
+class Entity : public Asset
 {
 public:
     Entity(sf::Vector2f position, float size);
@@ -16,9 +20,11 @@ public:
 
     sf::FloatRect getBounds();
 
+    unsigned int getAssetType();
+
     void setColor(sf::Color color);
 
-     bool isMoving();
+    bool isMoving();
 
 public:
     bool mColliding;

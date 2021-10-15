@@ -9,7 +9,7 @@
 
 class AssetManager
 {
-    typedef std::shared_ptr<Entity> Ptr;
+    typedef std::shared_ptr<Asset> Ptr;
 
 public:
     AssetManager();

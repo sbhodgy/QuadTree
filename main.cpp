@@ -2,11 +2,13 @@
 // #include "QuadTree.hpp"
 
 #include "Entity.hpp"
+#include "Asset.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
 #include <string>
+#include <cassert>
 
 int main()
 {
@@ -61,10 +63,13 @@ int main()
 
         // create the particle and add to the quad tree
 
-        std::shared_ptr<Entity> particle(new Entity(sf::Vector2f(xPosition, yPosition), entitySize));
+        std::shared_ptr<Asset> particle(new Entity(sf::Vector2f(xPosition, yPosition), entitySize));
 
-        if (i < 10)//numEntities / 4)
-            particle->setVelocity(xVelocity, yVelocity);
+        if (i < numEntities / 4)
+        {
+            dynamic_cast<Entity&>(*particle).setVelocity(xVelocity, yVelocity);
+        }
+            
 
         particleMgr.addEntity(particle);
 

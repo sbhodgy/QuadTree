@@ -9,7 +9,7 @@ QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
 {
     mQuad.setPosition(position);
     mQuad.setFillColor(sf::Color::Transparent);
-    mQuad.setOutlineColor(sf::Color::White);
+    mQuad.setOutlineColor(sf::Color::Transparent);
     mQuad.setOutlineThickness(-1.f);
 }
 
@@ -32,23 +32,23 @@ void QuadTree::draw(sf::RenderTarget &window)
     }
 }
 
-void QuadTree::addEntity(std::shared_ptr<Entity> entity)
+void QuadTree::addEntity(assetPtr entity)
 {
     if (mDivided == true)
         passEntity(entity);
-    else if (mQuad.getGlobalBounds().intersects(entity->getBounds()))
+    else if (mQuad.getGlobalBounds().intersects(dynamic_cast<Entity&>(*entity).getBounds()))
     {
         mEntities.push_back(entity);
 
-        if (entity->isMoving() == true)
-            mMovingEntities = true;
+        // if (entity->isMoving() == true)
+        //     mMovingEntities = true;
     }
 
     if (mEntities.size() == mEntityLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
         divideQuad();
 }
 
-void QuadTree::passEntity(std::shared_ptr<Entity> entity)
+void QuadTree::passEntity(assetPtr entity)
 {
     // pass the entity to the children quads.
     // the children will check for inclusion / exclusion
@@ -107,11 +107,11 @@ void QuadTree::checkCollisions()
         {
             for (auto itr2 = std::next(itr1, 1); itr2 != mEntities.end(); ++itr2)
             {
-                if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
-                {
-                    (*itr1)->mColliding = true;
-                    (*itr2)->mColliding = true;
-                }
+                // if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
+                // {
+                //     (*itr1)->mColliding = true;
+                //     (*itr2)->mColliding = true;
+                // }
             }
         }
     }

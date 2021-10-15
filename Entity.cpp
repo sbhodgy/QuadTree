@@ -41,6 +41,11 @@ sf::FloatRect Entity::getBounds()
     return mEntity.getGlobalBounds();
 }
 
+unsigned int Entity::getAssetType()
+{
+    return AssetType::Entity;
+}
+
 void Entity::setColor(sf::Color color)
 {
     mEntity.setFillColor(color);

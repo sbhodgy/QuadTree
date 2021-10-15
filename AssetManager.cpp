@@ -12,10 +12,10 @@ void AssetManager::addEntity(Ptr entity)
 
 void AssetManager::update(sf::Time dt)
 {
-    for (auto itr : mEntities)
-    {
-        itr->update(dt);
-    }
+    // for (auto itr : mEntities)
+    // {
+    //     itr->update(dt);
+    // }
 
     buildQuadTree();
 }
@@ -38,15 +38,15 @@ void AssetManager::detectCollisions()
 {
     mQuad.checkCollisions();
 
-    for (auto itr : mEntities)
-    {
-        if (itr->mColliding == true)
-            itr->setColor(sf::Color::Red);
-        else
-            itr->setColor(sf::Color::Green);
+    // for (auto itr : mEntities)
+    // {
+    //     if (itr->mColliding == true)
+    //         itr->setColor(sf::Color::Red);
+    //     else
+    //         itr->setColor(sf::Color::Green);
 
-        itr->mColliding = false;
-    }
+    //     itr->mColliding = false;
+    // }
 }
 
 void AssetManager::draw(sf::RenderWindow &window)
@@ -55,8 +55,8 @@ void AssetManager::draw(sf::RenderWindow &window)
 
     for (auto itr : mEntities)
     {
-        itr->draw(window);
+        dynamic_cast<Entity&>(*itr).draw(window);
     }
 
-    mQuad.draw(window);
+    // mQuad.draw(window);
 }
