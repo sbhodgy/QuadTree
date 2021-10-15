@@ -19,7 +19,7 @@ void AssetManager::update(sf::Time dt)
 
     buildQuadTree();
 
-    mQuad.flockAssets();
+    detectCollisions();
 }
 
 void AssetManager::buildQuadTree()
@@ -53,12 +53,11 @@ void AssetManager::detectCollisions()
 
 void AssetManager::draw(sf::RenderWindow &window)
 {
-    detectCollisions();
 
     for (auto itr : mAssets)
     {
         itr->draw(window);
     }
 
-    // mQuad.draw(window);
+    mQuad.draw(window);
 }

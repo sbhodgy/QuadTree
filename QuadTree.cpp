@@ -3,35 +3,15 @@
 #include "Entity.hpp"
 
 QuadTree::QuadTree(sf::Vector2f position, sf::Vector2f size)
-    : mAssetLimit(20),
+    : mAssetLimit(15),
       mQuad(size),
       mDivided(false),
-      mMovingAssets(false),
-      mMinQuadSize(5.f)
+      mMovingAssets(true)
 {
     mQuad.setPosition(position);
     mQuad.setFillColor(sf::Color::Transparent);
     mQuad.setOutlineColor(sf::Color::Transparent);
     mQuad.setOutlineThickness(-1.f);
-}
-
-void QuadTree::draw(sf::RenderTarget &window)
-{
-
-    if (mDivided == true)
-    {
-        mQuadNorthEast->draw(window);
-        mQuadNorthWest->draw(window);
-        mQuadSouthWest->draw(window);
-        mQuadSouthEast->draw(window);
-    }
-    else
-    {
-        if (mMovingAssets == true)
-            mQuad.setOutlineColor(sf::Color::Red);
-
-        window.draw(mQuad);
-    }
 }
 
 void QuadTree::addAsset(assetPtr asset)
@@ -46,8 +26,31 @@ void QuadTree::addAsset(assetPtr asset)
         //     mMovingAssets = true;
     }
 
-    if (mAssets.size() == mAssetLimit && (mQuad.getSize().x / 2.f) >= mMinQuadSize)
+    if (mAssets.size() == mAssetLimit)
         divideQuad();
+}
+
+void QuadTree::update(sf::Time time)
+{
+}
+
+void QuadTree::draw(sf::RenderTarget &window)
+{
+
+    if (mDivided == true)
+    {
+        mQuadNorthEast->draw(window);
+        mQuadNorthWest->draw(window);
+        mQuadSouthWest->draw(window);
+        mQuadSouthEast->draw(window);
+    }
+    else
+    {
+        // if (mMovingAssets == true)
+        mQuad.setOutlineColor(sf::Color::Red);
+
+        window.draw(mQuad);
+    }
 }
 
 void QuadTree::passAsset(assetPtr asset)
@@ -94,37 +97,6 @@ void QuadTree::divideQuad()
     mMovingAssets = false;
 }
 
-void QuadTree::flockAssets()
-{
-    float x;
-    float y;
-
-    if (mDivided == false)
-    {
-        for (auto itr : mAssets)
-        {
-            sf::Vector2f vel = dynamic_cast<Entity &>(*itr).getVelocity();
-            x += vel.x;
-            y += vel.y;
-        }
-
-        float xAverage = x / mAssets.size();
-        float yAverage = y / mAssets.size();
-
-        for (auto itr : mAssets)
-        {
-            dynamic_cast<Entity &>(*itr).setVelocity(xAverage, yAverage);
-        }
-    }
-    else
-    {
-        mQuadNorthEast->flockAssets();
-        mQuadNorthWest->flockAssets();
-        mQuadSouthWest->flockAssets();
-        mQuadSouthEast->flockAssets();
-    }
-}
-
 void QuadTree::checkCollisions()
 {
     if (mDivided == true)
@@ -140,11 +112,12 @@ void QuadTree::checkCollisions()
         {
             for (auto itr2 = std::next(itr1, 1); itr2 != mAssets.end(); ++itr2)
             {
-                // if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
-                // {
-                //     (*itr1)->mColliding = true;
-                //     (*itr2)->mColliding = true;
-                // }
+                if ((*itr1)->getBounds().intersects((*itr2)->getBounds()))
+                {
+                    dynamic_cast<Entity&>(*(*itr1)).setColor(sf::Color::Green);
+                    dynamic_cast<Entity&>(*(*itr1)).setVelocity(-(dynamic_cast<Entity&>(*(*itr1)).getVelocity()));
+                    dynamic_cast<Entity&>(*(*itr2)).setVelocity(-(dynamic_cast<Entity&>(*(*itr2)).getVelocity()));
+                }
             }
         }
     }

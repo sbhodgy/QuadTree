@@ -16,7 +16,7 @@ int main()
 
     int width = 700;
     int height = 700;
-    int maxVelocity = 200;
+    int maxVelocity = 100;
     int assetSize = 5.f;
     int numEntities = 350;
 
@@ -72,8 +72,6 @@ int main()
             
 
         assetManager.addEntity(particle);
-
-        // mParticles.push_back(*particle);
     }
 
     sf::Clock clock;

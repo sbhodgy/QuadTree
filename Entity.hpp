@@ -14,6 +14,8 @@ public:
 
     void setVelocity(float vx, float vy);
 
+    void setVelocity(sf::Vector2f velocity);
+
     sf::Vector2f getVelocity();
 
     void update(sf::Time dt);

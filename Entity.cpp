@@ -13,6 +13,11 @@ void Entity::setVelocity(float vx, float vy)
     mVelocity.y = vy;
 }
 
+void Entity::setVelocity(sf::Vector2f velocity)
+{
+    mVelocity = velocity;
+}
+
 sf::Vector2f Entity::getVelocity()
 {
     return mVelocity;

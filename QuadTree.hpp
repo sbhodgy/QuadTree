@@ -18,11 +18,11 @@ public:
 
     void addAsset(assetPtr asset);
 
+    void update(sf::Time dt);
+
     void draw(sf::RenderTarget &target);
 
     void checkCollisions();
-
-    void flockAssets();
 
 private:
     void passAsset(assetPtr asset);
@@ -32,7 +32,6 @@ private:
 private:
     std::vector<assetPtr> mAssets;
     sf::RectangleShape mQuad;
-    float mMinQuadSize;
     size_t mAssetLimit;
     bool mDivided;
     bool mMovingAssets;
