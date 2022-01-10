@@ -18,7 +18,7 @@ int main()
     int height = 700;
     int maxVelocity = 100;
     int assetSize = 5.f;
-    int numEntities = 350;
+    int numEntities = 500;
 
     // used to ensure a constant deltaTime
 
